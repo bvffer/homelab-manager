@@ -1,0 +1,14 @@
+name: Validate repository
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run repository checks
+        shell: pwsh
+        run: ./tests/Run-Tests.ps1
