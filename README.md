@@ -1,4 +1,4 @@
-# HP Homelab Manager
+# Homelab Manager
 
 A Windows PowerShell console control center for a Linux homelab. It offers SSH diagnostics, Wake-on-LAN, dashboard checks, Docker and service controls, LAN discovery, and an optional Reach SSH-client launcher.
 
@@ -24,7 +24,7 @@ This repository contains **no real server addresses, usernames, MAC addresses, c
 4. Start the app:
 
    ```powershell
-   .\HP-Homelab-Manager.ps1
+   .\Homelab-Manager.ps1
    ```
 
 ## Build an EXE

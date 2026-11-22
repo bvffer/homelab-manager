@@ -3,4 +3,4 @@
 param()
 
 $ErrorActionPreference = 'Stop'
-& (Join-Path $PSScriptRoot 'HP-Homelab-Manager.ps1') -Build
+& (Join-Path $PSScriptRoot 'Homelab-Manager.ps1') -Build

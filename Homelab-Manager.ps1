@@ -1,10 +1,10 @@
 ﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
-    HP ProDesk Homelab Control Center.
+    Homelab Manager.
 
 .DESCRIPTION
-    Terminal control center for the HP ProDesk 400 G1 Debian homelab server.
+    Terminal control center for a Linux homelab server.
     Windows PowerShell 5.1 compatible and suitable for PS2EXE compilation.
 
 .PARAMETER SelfTest
@@ -12,7 +12,7 @@
 
 .PARAMETER ConfigPath
     Optional alternate configuration path. The default is
-    %LOCALAPPDATA%\HPHomelabManager\config.json.
+    %LOCALAPPDATA%\HomelabManager\config.json.
 #>
 param(
     [switch]$SelfTest,
@@ -28,10 +28,10 @@ $ProgressPreference = 'SilentlyContinue'
 # Application constants and state
 # ============================================================================
 
-$script:AppName = 'HP ProDesk Homelab Control Center'
-$script:AppProduct = 'HP Homelab Manager'
+$script:AppName = 'Homelab Manager'
+$script:AppProduct = 'Homelab Manager'
 $script:AppVersion = '2.0.0'
-$script:AppDir = Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'HPHomelabManager'
+$script:AppDir = Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'HomelabManager'
 $script:ConfigPath = if ([string]::IsNullOrWhiteSpace($ConfigPath)) {
     Join-Path $script:AppDir 'config.json'
 }
@@ -45,7 +45,7 @@ else {
 $script:LogDir = Join-Path $script:AppDir 'logs'
 $script:LogFile = Join-Path $script:LogDir 'homelab-manager.log'
 $script:BackupDir = Join-Path $script:AppDir 'backups'
-$script:TempLauncherDir = Join-Path ([System.IO.Path]::GetTempPath()) 'HPHomelabManager'
+$script:TempLauncherDir = Join-Path ([System.IO.Path]::GetTempPath()) 'HomelabManager'
 $script:Config = $null
 $script:ConfigWarnings = @()
 $script:ConfigParseFailed = $false
@@ -1683,7 +1683,7 @@ function Invoke-ServerShutdown {
     Write-Host '  This will power off the Debian server. Running containers will stop.' -ForegroundColor Yellow
     Write-Host ('  You will be prompted for the Debian sudo password of user {0}.' -f $script:Config.server.sshUser) -ForegroundColor Gray
     Write-Host '  The SSH connection closing immediately afterwards is expected.' -ForegroundColor Gray
-    if (-not (Read-Confirmation -Message 'Power off the HP ProDesk server now?' -ExpectedWord 'SHUTDOWN')) { return }
+    if (-not (Read-Confirmation -Message 'Power off the homelab server now?' -ExpectedWord 'SHUTDOWN')) { return }
 
     Write-AppLog -Level 'INFO' -Message 'Administrative action: server shutdown confirmed and issued.'
     Write-Host ''
@@ -1714,7 +1714,7 @@ function Invoke-ServerReboot {
     Write-Host '  This will restart the Debian server. Running containers will stop briefly.' -ForegroundColor Yellow
     Write-Host ('  You will be prompted for the Debian sudo password of user {0}.' -f $script:Config.server.sshUser) -ForegroundColor Gray
     Write-Host '  The SSH connection closing immediately afterwards is expected.' -ForegroundColor Gray
-    if (-not (Read-Confirmation -Message 'Restart the HP ProDesk server now?' -ExpectedWord 'RESTART')) { return }
+    if (-not (Read-Confirmation -Message 'Restart the homelab server now?' -ExpectedWord 'RESTART')) { return }
 
     Write-AppLog -Level 'INFO' -Message 'Administrative action: server reboot confirmed and issued.'
     Write-Host ''
@@ -1780,7 +1780,7 @@ function New-SshLauncherScript {
 
     $template = @'
 $ErrorActionPreference = 'Continue'
-try { $Host.UI.RawUI.WindowTitle = 'HP ProDesk Homelab - Remote Terminal' } catch { }
+try { $Host.UI.RawUI.WindowTitle = 'Homelab Manager - Remote Terminal' } catch { }
 Write-Host ''
 Write-Host '==============================================================' -ForegroundColor Cyan
 Write-Host '        HP PRODESK HOMELAB - REMOTE DEBIAN TERMINAL' -ForegroundColor Cyan
@@ -4064,22 +4064,22 @@ function Invoke-HomelabManagerSetup {
 function Invoke-HomelabManagerBuild {
     $sourcePath = $PSCommandPath
     if (-not $sourcePath -or -not (Test-Path -LiteralPath $sourcePath -PathType Leaf)) {
-        throw 'The build must be run from HP Homelab Manager.ps1.'
+        throw 'The build must be run from Homelab-Manager.ps1.'
     }
 
     $distDirectory = Join-Path $PSScriptRoot 'dist'
     New-Item -ItemType Directory -Path $distDirectory -Force | Out-Null
-    $outputPath = Join-Path $distDirectory 'HP Homelab Manager.exe'
-    $temporaryPath = Join-Path $distDirectory ('HP Homelab Manager.build-{0}.exe' -f [guid]::NewGuid().ToString('N'))
+    $outputPath = Join-Path $distDirectory 'Homelab Manager.exe'
+    $temporaryPath = Join-Path $distDirectory ('Homelab Manager.build-{0}.exe' -f [guid]::NewGuid().ToString('N'))
 
     Import-Module ps2exe -ErrorAction Stop
-    foreach ($process in @(Get-Process -Name 'HP Homelab Manager' -ErrorAction SilentlyContinue)) {
+    foreach ($process in @(Get-Process -Name 'Homelab Manager' -ErrorAction SilentlyContinue)) {
         Stop-Process -Id $process.Id -Force -ErrorAction Stop
         Wait-Process -Id $process.Id -Timeout 10 -ErrorAction SilentlyContinue
     }
 
     try {
-        Invoke-PS2EXE -inputFile $sourcePath -outputFile $temporaryPath -title 'HP ProDesk Homelab Control Center' -description 'Windows control center for the Debian homelab server' -company 'Personal Homelab' -product 'HP Homelab Manager' -version '1.0.0.0'
+        Invoke-PS2EXE -inputFile $sourcePath -outputFile $temporaryPath -title 'Homelab Manager' -description 'Windows control center for a Linux homelab server' -company 'Personal Homelab' -product 'Homelab Manager' -version '1.0.0.0'
         if (-not (Test-Path -LiteralPath $temporaryPath -PathType Leaf)) { throw 'PS2EXE did not create the temporary EXE.' }
         if (Test-Path -LiteralPath $outputPath -PathType Leaf) { Remove-Item -LiteralPath $outputPath -Force -ErrorAction Stop }
         Move-Item -LiteralPath $temporaryPath -Destination $outputPath -Force -ErrorAction Stop

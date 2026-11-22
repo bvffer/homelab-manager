@@ -8,7 +8,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-Write-Host 'HP Homelab Manager - prerequisite check' -ForegroundColor Cyan
+Write-Host 'Homelab Manager - prerequisite check' -ForegroundColor Cyan
 Write-Host ('PowerShell: {0}' -f $PSVersionTable.PSVersion)
 
 $ssh = Get-Command ssh.exe -ErrorAction SilentlyContinue
