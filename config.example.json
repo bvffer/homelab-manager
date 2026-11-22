@@ -1,0 +1,19 @@
+{
+  "server": {
+    "label": "Linux Homelab Server",
+    "ip": "192.168.1.50",
+    "mac": "02:00:00:00:00:01",
+    "sshUser": "homelab",
+    "sshPort": 22
+  },
+  "ssh": {
+    "keyPath": "%USERPROFILE%\\.ssh\\id_ed25519"
+  },
+  "network": {
+    "gateway": "192.168.1.1"
+  },
+  "wakeOnLan": {
+    "broadcastAddress": "192.168.1.255",
+    "port": 9
+  }
+}
